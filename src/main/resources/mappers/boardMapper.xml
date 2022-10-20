@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yg.mapper.boardMapper">
+	<insert id="insertBoard">
+		insert into document values(dc_seq.nextval, #{title}, #{content}, #{writer_id}, sysdate, 0) 
+	</insert>
+	
+	<select id="selectBoard" resultType="com.yg.dto.SelectBoardDto">
+		select d.document_id, d.title, d.content, d.writer_id, m.name, d.creation_date, d.hits from document d, member m where d.writer_id = m.member_id and document_id = #{document_id}
+	</select>
+	
+	<resultMap type="HashMap" id="selectAll">
+		<id column="document_id" property="document_id"/>
+		<id column="title" property="title"/>
+		<id column="name" property="name"/>
+		<id column="creation_date" property="creation_date"/>
+		<id column="hits" property="hits"/>
+	</resultMap>
+	
+	<select id="selectAllBoard" resultMap="selectAll">
+		select d.document_id, d.title, m.name, d.creation_date, d.hits from document d, member m where d.writer_id = m.member_id order by document_id desc
+	</select>
+	
+	<delete id="deleteBoard" parameterType="int">
+		delete from document where document_id = #{document_id}
+	</delete>
+	
+	<update id="updateBoard" parameterType="com.yg.dto.BoardDto">
+		update document set title = #{title}, content = #{content} where document_id = #{document_id}
+	</update>
+	
+	<select id="count" parameterType="int" resultType="int">
+		select count(document_id) from document where writer_id = #{writer_id}
+	</select>
+</mapper>

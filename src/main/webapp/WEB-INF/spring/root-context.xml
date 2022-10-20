@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 접속(연결)을 관리할 빈 : "DataSource" -->
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+		<property value="oracle.jdbc.driver.OracleDriver" name="driverClassName"/>
+		<property value="jdbc:oracle:thin:@localhost:1521:xe" name="url"/>
+		<property value="user0818" name="username"/>
+		<property value="pass1234" name="password"/>
+	</bean>
+	<!-- SQL문 처리를 관리할 빈 : "SqlSession" ("SqlSessionFactory"가 만들어냄) -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+		<property name="dataSource" ref="dataSource"/>
+		<property value="classpath:/mybatis-config.xml" name="configLocation"/>
+		<property value="classpath:mappers/**/*Mapper.xml" name="mapperLocations"/>
+	</bean>
+	<!-- 다 쓴거 소거 -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession" destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>	
+	
+	<bean id="memberDaoImpl" class="com.yg.dao.MemberDaoImpl">
+		<constructor-arg ref="sqlSession"/>
+	</bean>
+	<bean id="boardDaoImpl" class="com.yg.dao.BoardDaoImpl">
+		<constructor-arg ref="sqlSession"/>
+	</bean>
+	
+</beans>

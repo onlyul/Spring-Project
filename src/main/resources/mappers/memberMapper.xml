@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yg.mapper.MemberMapper">
+	<insert id="insertMember">
+		insert into member values(mb_seq.nextval, #{name}, #{id}, #{pw}, sysdate, 0) 
+	</insert>
+	
+	<resultMap type="HashMap" id="loginMap">
+		<id column="member_id" property="member_id"/>
+		<id column="name" property="name"/>
+		<id column="id" property="id"/>
+		<id column="password" property="password"/>
+		<id column="join_date" property="join_date"/>
+		<id column="manager" property="manager"/>
+	</resultMap>
+	
+	<select id="selectMember" parameterType="com.yg.dto.MemberDto" resultMap="loginMap" >
+		select member_id, name, id, password, join_date, manager from member where id = #{id} and password = #{pw}
+	</select>
+	
+	<delete id="deleteMember" parameterType="int">
+		delete from member where member_id = #{member_id}
+	</delete>
+</mapper>
